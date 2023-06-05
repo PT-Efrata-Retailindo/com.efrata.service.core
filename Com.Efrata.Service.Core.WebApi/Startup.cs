@@ -96,9 +96,8 @@ namespace Com.Efrata.Service.Core.WebApi
                 .AddScoped<FinishTypeService>()
                 .AddScoped<StandardTestsService>()
                 .AddScoped<LampStandardService>()
-                 
+
                 .AddScoped<ColorTypeService>()
-                
                 .AddScoped<GarmentProductService>()
                 .AddScoped<GarmentCategoryService>()
                 .AddScoped<GarmentSupplierService>()
@@ -125,10 +124,11 @@ namespace Com.Efrata.Service.Core.WebApi
                 .AddTransient<IGarmentAdditionalChargesService, GarmentAdditionalChargesService>()
                 .AddTransient<IIBCurrencyService, IBCurrencyService>()
                 .AddTransient<IBankCashReceiptTypeService, BankCashReceiptTypeService>()
-                
+
                 .AddScoped<SizeService>()
                 .AddScoped<VatService>()
-                .AddScoped<ProductTypeService>();
+                .AddScoped<ProductTypeService>()
+                .AddScoped<MenuService>();
 
 
             RegisterServices(services);
@@ -227,7 +227,7 @@ namespace Com.Efrata.Service.Core.WebApi
             {
                 var context = serviceScope.ServiceProvider.GetService<CoreDbContext>();
                 context.Database.SetCommandTimeout(1000 * 60 * 10);
-               // context.Database.Migrate();
+                // context.Database.Migrate();
             }
             app.UseAuthentication();
             app.UseCors("CorePolicy");
