@@ -39,7 +39,7 @@ namespace Com.Efrata.Service.Core.Lib.Services
             {
                 List<string> SearchAttributes = new List<string>()
                 {
-                    "Code", "DivisionName", "Name"
+                    "Code", "Name"
                 };
 
                 Query = Query.Where(General.BuildSearch(SearchAttributes), Keyword);
