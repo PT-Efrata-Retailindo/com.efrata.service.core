@@ -359,9 +359,9 @@ namespace Com.Efrata.Service.Core.Lib.Services
 					Error.Add("PIC", GarmentSupplierVM.PIC);
 					Error.Add("Import", GarmentSupplierVM.import);
 					Error.Add("Kena PPN", GarmentSupplierVM.usevat);
-					//Error.Add("Kena PPH", GarmentSupplierVM.usetax);
+					Error.Add("Kena PPH", GarmentSupplierVM.usetax);
 					//Error.Add("Jenis PPH", GarmentSupplierVM.IncomeTaxes.name);
-					Error.Add("Rate PPH", GarmentSupplierVM.IncomeTaxes.rate);
+					//Error.Add("Rate PPH", GarmentSupplierVM.IncomeTaxes.rate);
 					Error.Add("NPWP", GarmentSupplierVM.NPWP);
 					Error.Add("Serial Number", GarmentSupplierVM.serialNumber);
 					Error.Add("Country", GarmentSupplierVM.country);
