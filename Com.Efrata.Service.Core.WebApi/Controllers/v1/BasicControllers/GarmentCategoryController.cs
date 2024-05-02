@@ -98,5 +98,27 @@ namespace Com.Efrata.Service.Core.WebApi.Controllers.v1.BasicControllers
                 return StatusCode(General.INTERNAL_ERROR_STATUS_CODE, Result);
             }
         }
+
+        [HttpGet("join-by-product")]
+        public IActionResult JoinByProduct(int Page = 1, int Size = 25, string Order = "{}", [Bind(Prefix = "Select[]")] List<string> Select = null, string Keyword = "", string Filter = "{}")
+        {
+            try
+            {
+                Tuple<List<GarmentProductViewModel>, int, Dictionary<string, string>> Data = Service.JoinProductCode(Page, Size, Order, Keyword, Filter);
+
+                Dictionary<string, object> Result =
+                    new ResultFormatter(ApiVersion, General.OK_STATUS_CODE, General.OK_MESSAGE)
+                    .Ok<GarmentProductViewModel>(Data.Item1, Page, Size, Data.Item2, Data.Item1.Count, Data.Item3, new List<string>());
+
+                return Ok(Result);
+            }
+            catch (Exception e)
+            {
+                Dictionary<string, object> Result =
+                    new ResultFormatter(ApiVersion, General.INTERNAL_ERROR_STATUS_CODE, e.Message)
+                    .Fail();
+                return StatusCode(General.INTERNAL_ERROR_STATUS_CODE, Result);
+            }
+        }
     }
 }
