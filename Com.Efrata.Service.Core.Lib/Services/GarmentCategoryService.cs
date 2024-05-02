@@ -145,5 +145,66 @@ namespace Com.Efrata.Service.Core.Lib.Services
             return this.DbSet.FirstOrDefault(p => (p.Name == name) && p._IsDeleted == false);
 
         }
+
+        public Tuple<List<GarmentProductViewModel>, int, Dictionary<string, string>> JoinProductCode(int Page = 1, int Size = 25, string Order = "{}", string Keyword = "", string Filter = "{}")
+        {
+            //IQueryable<Category> Query = this.DbContext.Categories;
+            //IQueryable<Division> divisions = DbContext.Divisions;
+            Dictionary<string, object> FilterDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(Filter);
+            string Keys;
+            var Values = "";
+            if (FilterDictionary != null && !FilterDictionary.Count.Equals(0))
+            {
+                foreach (var f in FilterDictionary)
+                {
+                    Keys = f.Key;
+                    Values = f.Value.ToString();
+                }
+            }
+
+            var Query = (from t1 in DbContext.GarmentCategories
+                        join t2 in DbContext.GarmentProducts on t1.Code equals t2.Code
+                        where t1.CodeRequirement == Values
+                        select new GarmentProductViewModel()
+                        {
+                            Code = t2.Code,
+                            Name = t2.Name,
+                            Composition = t2.Composition,
+                            Width = t2.Width,
+                            Const = t2.Const,
+                            Yarn = t2.Yarn,
+                            _LastModifiedUtc = t2._LastModifiedUtc
+                        }).Distinct();
+
+            Dictionary<string, string> OrderDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(Order);
+
+            /* Order */
+            if (OrderDictionary.Count.Equals(0))
+            {
+                OrderDictionary.Add("_LastModifiedUtc", General.DESCENDING);
+
+                Query = Query.OrderByDescending(b => b._LastModifiedUtc); /* Default Order */
+            }
+            else
+            {
+                string Key = OrderDictionary.Keys.First();
+                string OrderType = OrderDictionary[Key];
+                string TransformKey = General.TransformOrderBy(Key);
+
+                BindingFlags IgnoreCase = BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance;
+
+                Query = OrderType.Equals(General.ASCENDING) ?
+                    Query.OrderBy(b => b.GetType().GetProperty(TransformKey, IgnoreCase).GetValue(b)) :
+                    Query.OrderByDescending(b => b.GetType().GetProperty(TransformKey, IgnoreCase).GetValue(b));
+            }
+
+            /* Pagination */
+            Pageable<GarmentProductViewModel> pageable = new Pageable<GarmentProductViewModel>(Query, Page - 1, Size);
+            List<GarmentProductViewModel> Data = pageable.Data.ToList<GarmentProductViewModel>();
+
+            int TotalData = pageable.TotalCount;
+
+            return Tuple.Create(Data, TotalData, OrderDictionary);
+        }
     }
 }
