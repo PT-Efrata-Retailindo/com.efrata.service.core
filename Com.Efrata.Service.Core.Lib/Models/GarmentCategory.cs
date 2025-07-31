@@ -49,9 +49,16 @@ namespace Com.Efrata.Service.Core.Lib.Models
                 /* Service Validation */
                 GarmentCategoryService service = (GarmentCategoryService)validationContext.GetService(typeof(GarmentCategoryService));
 
-                if (service.DbContext.Set<GarmentCategory>().Count(r => r._IsDeleted.Equals(false) && r.Id != this.Id && r.Name.Equals(this.Name) ) > 0) /* Unique */
+                //if (service.DbContext.Set<GarmentCategory>().Count(r => r._IsDeleted.Equals(false) && r.Id != this.Id && r.Name.Equals(this.Name) ) > 0) /* Unique */
+                //{
+                //    validationResult.Add(new ValidationResult("Name already exists", new List<string> { "Name" }));
+                //}
+
+                // Validasi unik Code
+                if (!string.IsNullOrWhiteSpace(this.Code) &&
+                    service.DbContext.Set<GarmentCategory>().Count(r => r._IsDeleted.Equals(false) && r.Id != this.Id && r.Code.Equals(this.Code)) > 0)
                 {
-                    validationResult.Add(new ValidationResult("Name already exists", new List<string> { "Name" }));
+                    validationResult.Add(new ValidationResult("kode sudah pernah dipakai, silahkan gunakan kode lain", new List<string> { "Code" }));
                 }
             }
 
